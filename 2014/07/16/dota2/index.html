@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="2015&#x2F;12&#x2F;27最后更新，添加了对Dota2重生版本支持的部分。Dota2是一款颇为风靡的即时战略类游戏，去年官方就支持Mac和Linux了，对于习惯Mac和linux平台的孩子们来说，简直感动的泪流满面。当然，也简直是linux用户的福音啊啊！而使用起源2的重生版本也不负众望，很快就支持linux和Mac。时至今日（2015年12月），linux的诸多最新发行版对其的支持是怎样的呢？ 公正的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下玩转dota2">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="2015&#x2F;12&#x2F;27最后更新，添加了对Dota2重生版本支持的部分。Dota2是一款颇为风靡的即时战略类游戏，去年官方就支持Mac和Linux了，对于习惯Mac和linux平台的孩子们来说，简直感动的泪流满面。当然，也简直是linux用户的福音啊啊！而使用起源2的重生版本也不负众望，很快就支持linux和Mac。时至今日（2015年12月），linux的诸多最新发行版对其的支持是怎样的呢？ 公正的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/nvidia-prime.png">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/fucknvidia.gif">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/game.jpg">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/ubuntudota2-1.jpg">
+<meta property="article:published_time" content="2014-07-16T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T03:58:41.262Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="游戏">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhengmingpei.gitee.io/2014/07/16/dota2/nvidia-prime.png">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2014/07/16/dota2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2014/07/16/dota2/","path":"2014/07/16/dota2/","title":"Linux下玩转dota2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux下玩转dota2 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%8F%91%E8%A1%8C%E7%89%88%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">1.</span> <span class="nav-text">1.发行版的选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Debian-8-2"><span class="nav-number">1.1.</span> <span class="nav-text">Debian 8.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-Gnome-15-10"><span class="nav-number">1.2.</span> <span class="nav-text">Ubuntu Gnome 15.10</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%98%BE%E5%8D%A1"><span class="nav-number">2.</span> <span class="nav-text">2.显卡</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2014/07/16/dota2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux下玩转dota2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2014-07-16 15:00:00" itemprop="dateCreated datePublished" datetime="2014-07-16T15:00:00+08:00">2014-07-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 11:58:41" itemprop="dateModified" datetime="2021-11-28T11:58:41+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">大学</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>2015/12/27最后更新，添加了对Dota2重生版本支持的部分。<br>Dota2是一款颇为风靡的即时战略类游戏，去年官方就支持Mac和Linux了，对于习惯Mac和linux平台的孩子们来说，简直感动的泪流满面。当然，也简直是linux用户的福音啊啊！而使用起源2的重生版本也不负众望，很快就支持linux和Mac。时至今日（2015年12月），linux的诸多最新发行版对其的支持是怎样的呢？</p>
+<p>公正的说，与Win8.1相比，在相同硬件配置下跑Dota2，游戏的画质方面及体验也还是可以的。在win8.1下使用nvidia推荐的设置，帧数在55～25，一般大于35。<br>我的笔记本配置为：Intel集成显卡4000HD，Nidia620M独立显卡；处理器为i3；内存本来为2G，后来为4G。</p>
+<p>不过安装起来有一些麻烦，这是当然的，主要是笔记本电脑的双显卡切换问题。因此，在Linux下安装并正常运行Dota2的主要要素是：显卡驱动，显卡驱动和显卡驱动。（重要的事情说3遍哈哈）</p>
+<h2 id="1-发行版的选择"><a href="#1-发行版的选择" class="headerlink" title="1.发行版的选择"></a>1.发行版的选择</h2><blockquote>
+<p>官方给起源1Dota2给出的系统要求是WinXP 到Win8，Mac OS X Lion 10.7 ，友帮拓(即最受欢迎的Linux发行版之一Ubuntu)12.04或更高版本。<br>之前起源1Dota2时我用的是LinuxMInt17(相当于Ubuntu14.04)64位，测试用的笔记本内存当时是2G，有Swap区2G。处理器的话一般都可以吧，我是i3。当时安装了nvidia的官方驱动后可以玩Dota2，但是切换成Intel集成显卡后就切换不回Nidia独显了,算是硬伤吧。</p>
+</blockquote>
+<p>最近，笔记本内存升级到4G，其他配置没有变化，安装起源2Dota2Reborn，我测试过的发行版有：</p>
+<h3 id="Debian-8-2"><a href="#Debian-8-2" class="headerlink" title="Debian 8.2"></a>Debian 8.2</h3><p>双显卡的切换在debian中主要的解决方案是bumblebee。<br>按照官方说明安装bumblebee，然后下载steam官网的deb，注意steam安装dota2后可以使用<code>optirun steam</code>调用nvidia独显运行steam，然后启动dota2即可。运行开最低画质，渲染改为100%，帧数50~20，一般大于25，但起伏比较大。不推荐使用debian有以下3个原因：</p>
+<ol>
+<li>启动需要调用bumblebee的optirun，较为麻烦。</li>
+<li>运行steam进入dota2很可能会提示<strong>找不到steam</strong>，解决方法是勾选参与steam的beta测试，等steam客户端更新后运行dota2即可。</li>
+<li>最关键的麻烦是：很可能在更新了某个软件后内核发生改变，比如我安装了VirtualBox后kernel加入了kms模块，然后再次运行<code>optirun steam</code>时出现了各种错误，Game Over!<br>鉴于上面的理由，可以看到Linux显卡驱动对游戏稳定性有很大影响，下面测试的Ubuntu和之前的LinuxMint都具备nvidia-prime的支持，这是最新的双显卡切换方案，受nvidia官方支持，稳定性和性能都比较好。<h3 id="Ubuntu-Gnome-15-10"><a href="#Ubuntu-Gnome-15-10" class="headerlink" title="Ubuntu Gnome 15.10"></a>Ubuntu Gnome 15.10</h3>通过apt安装nvidia-prime，nvidia-352，现在切换显卡不会出现切换不回去的问题了，但是需要注销才能应用更改，并且我感觉重启更彻底。nvidia-setting的截图是这样的：<br><img src="/2014/07/16/dota2/nvidia-prime.png" alt="nvidiaprime"><br>安装steam，可以直接点击图标启动和运行steam和dota2。设置是渲染100%，开启垂直同步，别的不勾选，全屏运行。帧数60～25，一般大于30。</li>
+</ol>
+<h2 id="2-显卡"><a href="#2-显卡" class="headerlink" title="2.显卡"></a>2.显卡</h2><p>这是Linux下玩游戏的最大瓶颈，关键在于显卡驱动缺少支持。难怪Linus Torvalds会对Nvida竖中指。<br>来一张Linus的图：<br><img src="/2014/07/16/dota2/fucknvidia.gif" alt="fucknvidia"><br> 不过到了2015年底，情况有所改善，至少我的GeFrorce GT620M独立显卡成功装上了官方的nvidia-prime，之前起源1的截图是这样的：<br><img src="/2014/07/16/dota2/game.jpg" alt="game"><br>起源2的是这样的：<br><img src="/2014/07/16/dota2/ubuntudota2-1.jpg" alt="Ubuntu"><br>希望Linux游戏平台不死，桌面系统长存。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E6%B8%B8%E6%88%8F/" rel="tag"># 游戏</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2014/07/14/install-mint/" rel="prev" title="安装Linux Mint 17后要做的配置">
+                  <i class="fa fa-chevron-left"></i> 安装Linux Mint 17后要做的配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2014/08/18/%E9%AB%98%E6%95%88%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/" rel="next" title="高效管理工具推荐">
+                  高效管理工具推荐 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

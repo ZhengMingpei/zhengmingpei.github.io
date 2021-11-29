@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="本篇博客主要分析Android架构组件的官方范例中的Basic Sample，主要介绍3个组件的使用：  Room ViewModels LiveData  整体架构自上而下进行分析，APP参照下图架构。   请注意，每个组件仅依赖于其下一级的组件。例如，Activity 和 Fragment 仅依赖于视图模型。存储区是唯一依赖于其他多个类的类；在本例中，存储区依赖于持久性数据模型和远程后端数据源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓学习">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="本篇博客主要分析Android架构组件的官方范例中的Basic Sample，主要介绍3个组件的使用：  Room ViewModels LiveData  整体架构自上而下进行分析，APP参照下图架构。   请注意，每个组件仅依赖于其下一级的组件。例如，Activity 和 Fragment 仅依赖于视图模型。存储区是唯一依赖于其他多个类的类；在本例中，存储区依赖于持久性数据模型和远程后端数据源">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/final-architecture.png">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/room_architecture.png">
+<meta property="article:published_time" content="2021-11-25T14:08:20.000Z">
+<meta property="article:modified_time" content="2021-11-28T03:44:58.624Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="编程">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="安卓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/final-architecture.png">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/","path":"2021/11/25/安卓学习/","title":"安卓学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>安卓学习 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">整体架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Application"><span class="nav-number">2.</span> <span class="nav-text">Application</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%92%8C%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-number">2.1.</span> <span class="nav-text">线程池和线程通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity"><span class="nav-number">3.</span> <span class="nav-text">Activity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment"><span class="nav-number">4.</span> <span class="nav-text">Fragment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ProductAdapter"><span class="nav-number">4.1.</span> <span class="nav-text">ProductAdapter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A"><span class="nav-number">4.2.</span> <span class="nav-text">数据绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewModel"><span class="nav-number">5.</span> <span class="nav-text">ViewModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataRepository"><span class="nav-number">6.</span> <span class="nav-text">DataRepository</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RoomDatabase"><span class="nav-number">7.</span> <span class="nav-text">RoomDatabase</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DAO"><span class="nav-number">7.1.</span> <span class="nav-text">DAO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProductEntity"><span class="nav-number">7.2.</span> <span class="nav-text">ProductEntity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">8.</span> <span class="nav-text">其他</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-25 22:08:20" itemprop="dateCreated datePublished" datetime="2021-11-25T22:08:20+08:00">2021-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 11:44:58" itemprop="dateModified" datetime="2021-11-28T11:44:58+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BD%92%E4%B9%A1%E4%BB%A5%E5%90%8E/" itemprop="url" rel="index"><span itemprop="name">归乡以后</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本篇博客主要分析Android架构组件的<a target="_blank" rel="noopener" href="https://github.com/android/architecture-components-samples">官方范例</a>中的<a target="_blank" rel="noopener" href="https://github.com/android/architecture-components-samples/tree/main/BasicSample">Basic Sample</a>，主要介绍3个组件的使用：</p>
+<ul>
+<li>Room</li>
+<li>ViewModels</li>
+<li>LiveData</li>
+</ul>
+<h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p>自上而下进行分析，APP参照下图架构。</p>
+<p><img src="/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/final-architecture.png"></p>
+<blockquote>
+<p>请注意，每个组件仅依赖于其下一级的组件。例如，Activity 和 Fragment 仅依赖于视图模型。存储区是唯一依赖于其他多个类的类；在本例中，存储区依赖于持久性数据模型和远程后端数据源。<br>这种设计打造了一致且愉快的用户体验。无论用户上次使用应用是在几分钟前还是几天之前，现在回到应用时都会立即看到应用在本地保留的用户信息。如果此数据已过时，则应用的存储区模块将开始在后台更新数据。<br><a target="_blank" rel="noopener" href="https://developer.android.google.cn/jetpack/guide?hl=zh-cn">官方文档链接</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>创建<code>AppExecutors</code>，可以获取<code>AppDatabase</code>和<code>DataRepository</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BasicApp</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> AppExecutors mAppExecutors;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        mAppExecutors = <span class="keyword">new</span> AppExecutors();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> AppDatabase <span class="title">getDatabase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> AppDatabase.getInstance(<span class="keyword">this</span>, mAppExecutors);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataRepository <span class="title">getRepository</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> DataRepository.getInstance(getDatabase());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>应用xml配置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">package</span>=<span class="string">&quot;com.example.android.persistence&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">&quot;android.permission.ACCESS_FINE_LOCATION&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">&quot;android.permission.ACCESS_COARSE_LOCATION&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-feature</span> <span class="attr">android:name</span>=<span class="string">&quot;android.hardware.location.gps&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">&quot;.BasicApp&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">&quot;false&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">&quot;@mipmap/ic_launcher&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">&quot;@string/app_name&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">&quot;@style/AppTheme&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.android.persistence.ui.MainActivity&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.action.MAIN&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.LAUNCHER&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="线程池和线程通信"><a href="#线程池和线程通信" class="headerlink" title="线程池和线程通信"></a>线程池和线程通信</h3><blockquote>
+<p>AppExecutors: Global executor pools for the whole application.</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppExecutors</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Executor mDiskIO;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Executor mNetworkIO;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Executor mMainThread;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">AppExecutors</span><span class="params">(Executor diskIO, Executor networkIO, Executor mainThread)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.mDiskIO = diskIO;</span><br><span class="line">        <span class="keyword">this</span>.mNetworkIO = networkIO;</span><br><span class="line">        <span class="keyword">this</span>.mMainThread = mainThread;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppExecutors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(<span class="number">3</span>),</span><br><span class="line">                <span class="keyword">new</span> MainThreadExecutor());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// public Executor diskIO()</span></span><br><span class="line">    <span class="comment">// public Executor networkIO() </span></span><br><span class="line">    <span class="comment">// public Executor mainThread() </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MainThreadExecutor</span> <span class="keyword">implements</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> Handler mainThreadHandler = <span class="keyword">new</span> Handler(Looper.getMainLooper());</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="meta">@NonNull</span> Runnable command)</span> </span>&#123;</span><br><span class="line">            mainThreadHandler.post(command);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他线程可以通过<code>mainThreadHandler</code>与主线程（ui线程）进行通信。</p>
+<blockquote>
+<p>Handler可以用来在多线程间进行通信，在另一个线程中去更新UI线程中的UI控件只是Handler使用中的一种典型案例，除此之外，Handler可以做很多其他的事情。每个Handler都绑定了一个线程，假设存在两个线程ThreadA和ThreadB，并且HandlerA绑定了 ThreadA，在ThreadB中的代码执行到某处时，出于某些原因，我们需要让ThreadA执行某些代码，此时我们就可以使用Handler，我们可以在ThreadB中向HandlerA中加入某些信息以告知ThreadA中该做某些处理了。由此可以看出，Handler是Thread的代言人，是多线程之间通信的桥梁，通过Handler，我们可以在一个线程中控制另一个线程去做某事。<br>————————————————<br>版权声明：本文为CSDN博主「孙群」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/iispring/article/details/47115879">https://blog.csdn.net/iispring/article/details/47115879</a></p>
+</blockquote>
+<h2 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h2><p><code>MainActivity</code>创建<code>ProductListFragment</code>并显示，可调用<code>show</code>生成特定的<code>ProductFragment</code>并显示。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(<span class="meta">@Nullable</span> Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.main_activity);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Add product list fragment if this is first creation</span></span><br><span class="line">        <span class="keyword">if</span> (savedInstanceState == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ProductListFragment fragment = <span class="keyword">new</span> ProductListFragment();</span><br><span class="line"></span><br><span class="line">            getSupportFragmentManager().beginTransaction()</span><br><span class="line">                    .add(R.id.fragment_container, fragment, ProductListFragment.TAG).commit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Shows the product detail fragment */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Product product)</span> </span>&#123;</span><br><span class="line">        ProductFragment productFragment = ProductFragment.forProduct(product.getId());</span><br><span class="line"></span><br><span class="line">        getSupportFragmentManager()</span><br><span class="line">                .beginTransaction()</span><br><span class="line">                .addToBackStack(<span class="string">&quot;product&quot;</span>)</span><br><span class="line">                .replace(R.id.fragment_container,</span><br><span class="line">                        productFragment, <span class="keyword">null</span>).commit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h2><p><code>ProductListFragment</code>，进行<strong>视图绑定</strong>和<code>RecyclerView</code>内容的生成，并创建<code>ProductListViewModel</code>。</p>
+<ul>
+<li><strong>视图绑定</strong>部分，<code>R.layout.list_fragment</code>-&gt;<code>ListFragmentBinding</code>。</li>
+<li><code>RecyclerView</code>内容的生成需要<code>ProductAdapter</code></li>
+<li><code>ProductListViewModel</code>的<code>liveData</code>的变化会更新<code>ProductAdapter</code>的<code>ProductList</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductListFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;ProductListFragment&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> ProductAdapter mProductAdapter;</span><br><span class="line">    <span class="keyword">private</span> ListFragmentBinding mBinding;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(<span class="meta">@NonNull</span> LayoutInflater inflater, <span class="meta">@Nullable</span> ViewGroup container,</span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="meta">@Nullable</span> Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        mBinding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        mProductAdapter = <span class="keyword">new</span> ProductAdapter(mProductClickCallback);</span><br><span class="line">        mBinding.productsList.setAdapter(mProductAdapter);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> mBinding.getRoot();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewCreated</span><span class="params">(<span class="meta">@NonNull</span> View view, <span class="meta">@Nullable</span> Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onViewCreated(view, savedInstanceState);</span><br><span class="line">        <span class="keyword">final</span> ProductListViewModel viewModel =</span><br><span class="line">                <span class="keyword">new</span> ViewModelProvider(<span class="keyword">this</span>).get(ProductListViewModel.class);</span><br><span class="line"></span><br><span class="line">        mBinding.productsSearchBtn.setOnClickListener(v -&gt; &#123;</span><br><span class="line">            Editable query = mBinding.productsSearchBox.getText();</span><br><span class="line">            viewModel.setQuery(query);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        subscribeUi(viewModel.getProducts());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">subscribeUi</span><span class="params">(LiveData&lt;List&lt;ProductEntity&gt;&gt; liveData)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Update the list when the data changes</span></span><br><span class="line">        liveData.observe(getViewLifecycleOwner(), myProducts -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (myProducts != <span class="keyword">null</span>) &#123;</span><br><span class="line">                mBinding.setIsLoading(<span class="keyword">false</span>);</span><br><span class="line">                mProductAdapter.setProductList(myProducts);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                mBinding.setIsLoading(<span class="keyword">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// espresso does not know how to wait for data binding&#x27;s loop so we execute changes sync.</span></span><br><span class="line">            mBinding.executePendingBindings();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*@Override</span></span><br><span class="line"><span class="comment">    public void onDestroyView()*/</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ProductClickCallback mProductClickCallback = product -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) &#123;</span><br><span class="line">            ((MainActivity) requireActivity()).show(product);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ProductAdapter"><a href="#ProductAdapter" class="headerlink" title="ProductAdapter"></a>ProductAdapter</h3><p>继承<code>RecyclerView.Adapter</code>，包括<code>List&lt;? extends Product&gt;</code>，存储产品列表。</p>
+<p><code>setProductList</code>可以更新<code>List&lt;? extends Product&gt;</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">ProductAdapter</span>.<span class="title">ProductViewHolder</span>&gt; </span>&#123;</span><br><span class="line">    List&lt;? extends Product&gt; mProductList;</span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ProductClickCallback mProductClickCallback;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProductAdapter</span><span class="params">(<span class="meta">@Nullable</span> ProductClickCallback clickCallback)</span> </span>&#123;</span><br><span class="line">        mProductClickCallback = clickCallback;</span><br><span class="line">        setHasStableIds(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProductList</span><span class="params">(<span class="keyword">final</span> List&lt;? extends Product&gt; productList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mProductList == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mProductList = productList;</span><br><span class="line">            notifyItemRangeInserted(<span class="number">0</span>, productList.size());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            DiffUtil.DiffResult result = DiffUtil.calculateDiff(<span class="keyword">new</span> DiffUtil.Callback());<span class="comment">/*  @Override...*/</span></span><br><span class="line">            mProductList = productList;</span><br><span class="line">            result.dispatchUpdatesTo(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h3><p><code>layout xml</code>-&gt;<code>mProductClickCallback</code>(<code>ProductListFragment</code>)-&gt;<code>Activity</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">layout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:app</span>=<span class="string">&quot;http://schemas.android.com/apk/res-auto&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">&quot;product&quot;</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">type</span>=<span class="string">&quot;com.example.android.persistence.model.Product&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">&quot;callback&quot;</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">type</span>=<span class="string">&quot;com.example.android.persistence.ui.ProductClickCallback&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">androidx.cardview.widget.CardView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">&quot;wrap_content&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:minHeight</span>=<span class="string">&quot;@dimen/product_item_min_height&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">&quot;@&#123;() -&gt;  callback.onClick(product)&#125;&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:orientation</span>=<span class="string">&quot;horizontal&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginStart</span>=<span class="string">&quot;@dimen/item_horizontal_margin&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginEnd</span>=<span class="string">&quot;@dimen/item_horizontal_margin&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:cardUseCompatPadding</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h2><ul>
+<li><code>LiveData mProducts</code>-&gt;<code>ProductAdapter</code>的<code>List&lt;? extends Product&gt;</code></li>
+<li><code>DataRepository</code>-&gt;<code>LiveData mProducts</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductListViewModel</span> <span class="keyword">extends</span> <span class="title">AndroidViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUERY_KEY = <span class="string">&quot;QUERY&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SavedStateHandle mSavedStateHandler;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DataRepository mRepository;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LiveData&lt;List&lt;ProductEntity&gt;&gt; mProducts;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProductListViewModel</span><span class="params">(<span class="meta">@NonNull</span> Application application,</span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="meta">@NonNull</span> SavedStateHandle savedStateHandle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(application);</span><br><span class="line">        mSavedStateHandler = savedStateHandle;</span><br><span class="line"></span><br><span class="line">        mRepository = ((BasicApp) application).getRepository();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Use the savedStateHandle.getLiveData() as the input to switchMap,</span></span><br><span class="line">        <span class="comment">// allowing us to recalculate what LiveData to get from the DataRepository</span></span><br><span class="line">        <span class="comment">// based on what query the user has entered</span></span><br><span class="line">        mProducts = Transformations.switchMap(</span><br><span class="line">                savedStateHandle.getLiveData(<span class="string">&quot;QUERY&quot;</span>, <span class="keyword">null</span>),</span><br><span class="line">                (Function&lt;CharSequence, LiveData&lt;List&lt;ProductEntity&gt;&gt;&gt;) query -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (TextUtils.isEmpty(query)) &#123;</span><br><span class="line">                        <span class="keyword">return</span> mRepository.getProducts();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> mRepository.searchProducts(<span class="string">&quot;*&quot;</span> + query + <span class="string">&quot;*&quot;</span>);</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setQuery</span><span class="params">(CharSequence query)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Save the user&#x27;s query into the SavedStateHandle.</span></span><br><span class="line">        <span class="comment">// This ensures that we retain the value across process death</span></span><br><span class="line">        <span class="comment">// and is used as the input into the Transformations.switchMap above</span></span><br><span class="line">        mSavedStateHandler.set(QUERY_KEY, query);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Expose the LiveData Products query so the UI can observe it.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;ProductEntity&gt;&gt; getProducts() &#123;</span><br><span class="line">        <span class="keyword">return</span> mProducts;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="DataRepository"><a href="#DataRepository" class="headerlink" title="DataRepository"></a>DataRepository</h2><p><code>RoomDatabase(AppDatabase)</code>-&gt;<code>DataRepository(MediatorLiveData)</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataRepository</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DataRepository sInstance;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AppDatabase mDatabase;</span><br><span class="line">    <span class="keyword">private</span> MediatorLiveData&lt;List&lt;ProductEntity&gt;&gt; mObservableProducts;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">DataRepository</span><span class="params">(<span class="keyword">final</span> AppDatabase database)</span> </span>&#123;</span><br><span class="line">        mDatabase = database;</span><br><span class="line">        mObservableProducts = <span class="keyword">new</span> MediatorLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        mObservableProducts.addSource(mDatabase.productDao().loadAllProducts(),</span><br><span class="line">                productEntities -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (mDatabase.getDatabaseCreated().getValue() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        mObservableProducts.postValue(productEntities);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DataRepository <span class="title">getInstance</span><span class="params">(<span class="keyword">final</span> AppDatabase database)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (DataRepository.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    sInstance = <span class="keyword">new</span> DataRepository(database);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the list of products from the database and get notified when the data changes.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;ProductEntity&gt;&gt; getProducts() &#123;</span><br><span class="line">        <span class="keyword">return</span> mObservableProducts;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;ProductEntity&gt; <span class="title">loadProduct</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> productId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mDatabase.productDao().loadProduct(productId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;CommentEntity&gt;&gt; loadComments(<span class="keyword">final</span> <span class="keyword">int</span> productId) &#123;</span><br><span class="line">        <span class="keyword">return</span> mDatabase.commentDao().loadComments(productId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;ProductEntity&gt;&gt; searchProducts(String query) &#123;</span><br><span class="line">        <span class="keyword">return</span> mDatabase.productDao().searchAllProducts(query);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="RoomDatabase"><a href="#RoomDatabase" class="headerlink" title="RoomDatabase"></a>RoomDatabase</h2><p>关于<code>synchronized</code>的锁</p>
+<blockquote>
+<p><code>synchronized</code>的锁本质上2种，写法3种：</p>
+<ul>
+<li>Object.class 类.class锁</li>
+<li>this 当前对象锁，等同于同步方法思路，这个对象就是容器对象。</li>
+<li>object 成员变量锁代码块中使用 Object.class 相当于把这个方法标记为静态同步的。<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a2425cfadb9a">android 多线程 — synchronized</a></li>
+</ul>
+</blockquote>
+<p>关于Room的组件</p>
+<blockquote>
+<p>Room 包含 3 个主要组件：</p>
+<ul>
+<li>数据库：包含数据库持有者，并作为应用已保留的持久关系型数据的底层连接的主要接入点。<br>使用 @Database 注释的类应满足以下条件：<ul>
+<li>是扩展 RoomDatabase 的抽象类。</li>
+<li>在注释中添加与数据库关联的实体列表。</li>
+<li>包含具有 0 个参数且返回使用 @Dao 注释的类的抽象方法。<br>在运行时，您可以通过调用 Room.databaseBuilder() 或 Room.inMemoryDatabaseBuilder() 获取 Database 的实例。</li>
+</ul>
+</li>
+<li>Entity：表示数据库中的表。</li>
+<li>DAO：包含用于访问数据库的方法。<br>应用使用 Room 数据库来获取与该数据库关联的数据访问对象 (DAO)。然后，应用使用每个 DAO 从数据库中获取实体，然后再将对这些实体的所有更改保存回数据库中。 最后，应用使用实体来获取和设置与数据库中的表列相对应的值。<br><a target="_blank" rel="noopener" href="https://developer.android.google.cn/training/data-storage/room?hl=zh-cn">使用 Room 将数据保存到本地数据库</a></li>
+</ul>
+</blockquote>
+<p><img src="/2021/11/25/%E5%AE%89%E5%8D%93%E5%AD%A6%E4%B9%A0/room_architecture.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Database(entities = &#123;ProductEntity.class, ProductFtsEntity.class, CommentEntity.class&#125;, version = 2)</span></span><br><span class="line"><span class="meta">@TypeConverters(DateConverter.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AppDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AppDatabase sInstance;</span><br><span class="line">    <span class="meta">@VisibleForTesting</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DATABASE_NAME = <span class="string">&quot;basic-sample-db&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ProductDao <span class="title">productDao</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> CommentDao <span class="title">commentDao</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MutableLiveData&lt;Boolean&gt; mIsDatabaseCreated = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AppDatabase <span class="title">getInstance</span><span class="params">(<span class="keyword">final</span> Context context, <span class="keyword">final</span> AppExecutors executors)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (AppDatabase.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    sInstance = buildDatabase(context.getApplicationContext(), executors);</span><br><span class="line">                    sInstance.updateDatabaseCreated(context.getApplicationContext());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Build the database. &#123;<span class="doctag">@link</span> Builder#build()&#125; only sets up the database configuration and</span></span><br><span class="line"><span class="comment">     * creates a new instance of the database.</span></span><br><span class="line"><span class="comment">     * The SQLite database is only created when it&#x27;s accessed for the first time.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> AppDatabase <span class="title">buildDatabase</span><span class="params">(<span class="keyword">final</span> Context appContext,</span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="keyword">final</span> AppExecutors executors)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Room.databaseBuilder(appContext, AppDatabase.class, DATABASE_NAME)</span><br><span class="line">                .addCallback(<span class="keyword">new</span> Callback() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(<span class="meta">@NonNull</span> SupportSQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">super</span>.onCreate(db);</span><br><span class="line">                        executors.diskIO().execute(() -&gt; &#123;</span><br><span class="line">                            <span class="comment">// Add a delay to simulate a long-running operation</span></span><br><span class="line">                            addDelay();</span><br><span class="line">                            <span class="comment">// Generate the data for pre-population</span></span><br><span class="line">                            AppDatabase database = AppDatabase.getInstance(appContext, executors);</span><br><span class="line">                            List&lt;ProductEntity&gt; products = DataGenerator.generateProducts();</span><br><span class="line">                            List&lt;CommentEntity&gt; comments =</span><br><span class="line">                                    DataGenerator.generateCommentsForProducts(products);</span><br><span class="line"></span><br><span class="line">                            insertData(database, products, comments);</span><br><span class="line">                            <span class="comment">// notify that the database was created and it&#x27;s ready to be used</span></span><br><span class="line">                            database.setDatabaseCreated();</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">            .addMigrations(MIGRATION_1_2)</span><br><span class="line">            .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Check whether the database already exists and expose it via &#123;<span class="doctag">@link</span> #getDatabaseCreated()&#125;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateDatabaseCreated</span><span class="params">(<span class="keyword">final</span> Context context)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setDatabaseCreated</span><span class="params">()</span></span>&#123;</span><br><span class="line">        mIsDatabaseCreated.postValue(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertData</span><span class="params">(<span class="keyword">final</span> AppDatabase database, <span class="keyword">final</span> List&lt;ProductEntity&gt; products,</span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="keyword">final</span> List&lt;CommentEntity&gt; comments)</span> </span>&#123;</span><br><span class="line">        database.runInTransaction(() -&gt; &#123;</span><br><span class="line">            database.productDao().insertAll(products);</span><br><span class="line">            database.commentDao().insertAll(comments);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addDelay</span><span class="params">()</span> <span class="comment">// Thread.sleep(4000);</span></span></span><br><span class="line"><span class="function">    <span class="comment">// public LiveData&lt;Boolean&gt; getDatabaseCreated()</span></span></span><br><span class="line"><span class="function">    <span class="comment">// private static final Migration MIGRATION_1_2 = new Migration(1, 2) &#123;    &#125;;</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="DAO"><a href="#DAO" class="headerlink" title="DAO"></a>DAO</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Dao</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Query(&quot;SELECT * FROM products&quot;)</span></span><br><span class="line">    LiveData&lt;List&lt;ProductEntity&gt;&gt; loadAllProducts();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Insert(onConflict = OnConflictStrategy.REPLACE)</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insertAll</span><span class="params">(List&lt;ProductEntity&gt; products)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Query(&quot;select * from products where id = :productId&quot;)</span></span><br><span class="line">    <span class="function">LiveData&lt;ProductEntity&gt; <span class="title">loadProduct</span><span class="params">(<span class="keyword">int</span> productId)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Query(&quot;select * from products where id = :productId&quot;)</span></span><br><span class="line">    <span class="function">ProductEntity <span class="title">loadProductSync</span><span class="params">(<span class="keyword">int</span> productId)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Query(&quot;SELECT products.* FROM products JOIN productsFts ON (products.id = productsFts.rowid) &quot;</span></span><br><span class="line"><span class="meta">        + &quot;WHERE productsFts MATCH :query&quot;)</span></span><br><span class="line">    LiveData&lt;List&lt;ProductEntity&gt;&gt; searchAllProducts(String query);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ProductEntity"><a href="#ProductEntity" class="headerlink" title="ProductEntity"></a>ProductEntity</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity(tableName = &quot;products&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductEntity</span> <span class="keyword">implements</span> <span class="title">Product</span> </span>&#123;</span><br><span class="line">    <span class="meta">@PrimaryKey</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> price;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Ignore</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProductEntity</span><span class="params">(<span class="keyword">int</span> id, String name, String description, <span class="keyword">int</span> price)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.description = description;</span><br><span class="line">        <span class="keyword">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProductEntity</span><span class="params">(Product product)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = product.getId();</span><br><span class="line">        <span class="keyword">this</span>.name = product.getName();</span><br><span class="line">        <span class="keyword">this</span>.description = product.getDescription();</span><br><span class="line">        <span class="keyword">this</span>.price = product.getPrice();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44666188/article/details/105500779">LiveData结合Room数据库使用以及线程问题</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/%E5%AE%89%E5%8D%93/" rel="tag"># 安卓</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/03/08/Leetcode_695_Max-Area-of-Island/" rel="prev" title="Leetcode 695. Max Area of Island"">
+                  <i class="fa fa-chevron-left"></i> Leetcode 695. Max Area of Island"
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

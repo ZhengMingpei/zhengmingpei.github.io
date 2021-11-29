@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Baidu运维的1面挂掉了挂掉了挂掉了…… Baidu面试的安排很棒，无论是休息区的布置，还是面试的通知步骤，都很人性化，很能反映一个国际知名企业的作风，我对baidu的好感+1。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Baidu运维一面挂掉了">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2015/09/07/%E7%99%BE%E5%BA%A6/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="Baidu运维的1面挂掉了挂掉了挂掉了…… Baidu面试的安排很棒，无论是休息区的布置，还是面试的通知步骤，都很人性化，很能反映一个国际知名企业的作风，我对baidu的好感+1。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-09-07T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T03:03:13.216Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="感悟">
+<meta property="article:tag" content="求职">
+<meta property="article:tag" content="Baidu">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2015/09/07/%E7%99%BE%E5%BA%A6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2015/09/07/%E7%99%BE%E5%BA%A6/","path":"2015/09/07/百度/","title":"Baidu运维一面挂掉了"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Baidu运维一面挂掉了 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2015/09/07/%E7%99%BE%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Baidu运维一面挂掉了
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-09-07 15:00:00" itemprop="dateCreated datePublished" datetime="2015-09-07T15:00:00+08:00">2015-09-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 11:03:13" itemprop="dateModified" datetime="2021-11-28T11:03:13+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">大学</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Baidu运维的1面挂掉了挂掉了挂掉了……</p>
+<p>Baidu面试的安排很棒，无论是休息区的布置，还是面试的通知步骤，都很人性化，很能反映一个国际知名企业的作风，我对baidu的好感+1。</p>
+<span id="more"></span>
+<p>至于面试过程：</p>
+<p>在线笔试做的烂，也不知道怎么过的。之前已经做了好几家的笔试，希望秋招测测自己的能力，本来感觉最有把握的应该是美团吧，反而只有最晚的Baidu给了面试资格，唉……</p>
+<p>上午让电气的陈”校长“陪着去面试地点，10点30左右正式面试，大概40多分钟，包括技术基础考察+思维考察+人生规划。技术基础方面，毕竟是外行+半吊子，基础学的不系统，什么都知道了一点点但就是都说不出重点，我TM真是醉了，至于做的项目也是浅显外行地不行；思维考察方面，考了一个智力题吧，第一种情况很快就处理了，然后第二种情况给了提示还是想不粗来，简直捉急；人生规划方面，前面2个方面完了，面试官开始讲述运维这个岗位还是对coding要求很高的，基础不好还是不适合这个岗位的（说到这，我的面试已经挂掉）他给我提了一些建议，比如：真正感兴趣的话，认真去花时间学一些计算机底层的东西，多刷OJ的题目，提高自己的竞争力。最后面试官充当了人生导师的角色，回答了我的一些幼稚的问题，想想问的问题真TM丢人，我最后说了有考研的打算，他认为一定要找好读研学习的方向，系统？应用？总之这是非常非常关键的问题。</p>
+<p>总的来说我很渣，面试官人很好，而且很diao。 他还有句话我很喜欢，对于搞coding的来说，不用穿正装，随意一点就好，不在意这个，技术是最重要的。（深得我心）</p>
+<p>面试回来，想了很久 ，感觉自己很蠢很天真，现在根本没有从事coding行业的能力，还是得老老实实考我的研， 争取3年的缓冲期，多学东西。面试的时候也跟面试官讨论过我专业的问题，现在非常非常非常后悔转专业没走，现在再去跨考的难度比当时大的多，还已经浪费了2年，想想自己那时候真是作，考研！考研！考研！ 考TM的研究生！失败的本科，简直不想再回顾，大二以后，既没成绩又没踏踏实实做事，还是单身狗，羡慕保研的秀恩爱的拿offer的，这操蛋的2年，就算现在机会来了也抓不住……</p>
+<p>忽然想起装系统这个问题，大一，会装系统；大二，会熟练地装系统；大三，会熟练地装各种系统；大四？</p>
+<p>面试官跟我讨论了重复工作的意义，很多事情做多了要去思考机理和改善方案，要不就是一直按部就班的码农， 那样不可能提高。我知道这个道理，但是当时理想不坚定，完全坚持自学一门不想干的技术类学科，感觉真的好难。</p>
+<p>自己的自制力不够强，投身coding的欲望不够强，生存的欲望不够强，偏偏还心比天高眼高手低，菜的要让人笑话，丢人丢到Baidu了，让人笑话烂了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%84%9F%E6%82%9F/" rel="tag"># 感悟</a>
+              <a href="/tags/%E6%B1%82%E8%81%8C/" rel="tag"># 求职</a>
+              <a href="/tags/Baidu/" rel="tag"># Baidu</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/08/04/pat/" rel="prev" title="PAT刷题记录">
+                  <i class="fa fa-chevron-left"></i> PAT刷题记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/15/putty/" rel="next" title="使用putty工具访问virtualbox内的虚拟机">
+                  使用putty工具访问virtualbox内的虚拟机 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

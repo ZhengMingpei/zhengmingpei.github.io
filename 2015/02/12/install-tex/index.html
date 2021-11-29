@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="2015.2.12更新：下面的笔记适用于在基于debian的发行版(比如Ubuntu、LinuxMint)安装Texlive2013、2014；第一步根据本机状况，可能不需要；Texlive2014已经可以下载安装了，下面的所有“2013”更改为“2014”，安装Texlive2014正常。 1.Ubuntu卸载旧的Texlive2009Try the following commands, on">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装TeX及中文支持">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2015/02/12/install-tex/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="2015.2.12更新：下面的笔记适用于在基于debian的发行版(比如Ubuntu、LinuxMint)安装Texlive2013、2014；第一步根据本机状况，可能不需要；Texlive2014已经可以下载安装了，下面的所有“2013”更改为“2014”，安装Texlive2014正常。 1.Ubuntu卸载旧的Texlive2009Try the following commands, on">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhengmingpei.gitee.io/2015/02/12/install-tex/tex.png">
+<meta property="article:published_time" content="2015-02-12T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T04:04:44.098Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="Tex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhengmingpei.gitee.io/2015/02/12/install-tex/tex.png">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2015/02/12/install-tex/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2015/02/12/install-tex/","path":"2015/02/12/install-tex/","title":"安装TeX及中文支持"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>安装TeX及中文支持 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Ubuntu%E5%8D%B8%E8%BD%BD%E6%97%A7%E7%9A%84Texlive2009"><span class="nav-number">1.</span> <span class="nav-text">1.Ubuntu卸载旧的Texlive2009</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85texlive-2013"><span class="nav-number">2.</span> <span class="nav-text">2.安装texlive 2013</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%90%9E%E5%AE%9A%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93"><span class="nav-number">3.</span> <span class="nav-text">3.搞定中文字体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93"><span class="nav-number">3.1.</span> <span class="nav-text">(1)测试中文字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E5%86%B3%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">(2)解决中文字体问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AETexlive%EF%BC%8C%E4%BD%BF%E5%85%B6%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%AD%97%E4%BD%93"><span class="nav-number">3.2.1.</span> <span class="nav-text">配置Texlive，使其可以使用系统字体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9DSimSun%E5%AD%97%E4%BD%93%E5%88%B0%E7%B3%BB%E7%BB%9F%E4%B8%AD"><span class="nav-number">3.2.2.</span> <span class="nav-text">拷贝SimSun字体到系统中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B5%8B%E8%AF%95%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">3.3.</span> <span class="nav-text">(3)测试问题解决</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%B0%83%E7%94%A8%E5%85%B6%E4%BB%96%E5%AD%97%E4%BD%93"><span class="nav-number">3.4.</span> <span class="nav-text">(4)调用其他字体</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2015/02/12/install-tex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安装TeX及中文支持
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-02-12 15:00:00" itemprop="dateCreated datePublished" datetime="2015-02-12T15:00:00+08:00">2015-02-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 12:04:44" itemprop="dateModified" datetime="2021-11-28T12:04:44+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">大学</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>2015.2.12更新：<br>下面的笔记适用于在基于debian的发行版(比如Ubuntu、LinuxMint)安装Texlive2013、2014；<br>第一步根据本机状况，可能不需要；<br>Texlive2014已经可以下载安装了，下面的所有“2013”更改为“2014”，安装Texlive2014正常。</p>
+<h2 id="1-Ubuntu卸载旧的Texlive2009"><a href="#1-Ubuntu卸载旧的Texlive2009" class="headerlink" title="1.Ubuntu卸载旧的Texlive2009"></a>1.Ubuntu卸载旧的Texlive2009</h2><p>Try the following commands, one after another. If you progress, respective folders may already be deleted:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get purge texlive*  </span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/texlive/2009 and rm -rf ~/.texlive2009  </span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/share/texmf  </span><br><span class="line">rm -rf /var/lib/texmf  </span><br><span class="line">rm -rf /etc/texmf  </span><br><span class="line">sudo apt-get remove tex-common --purge  </span><br><span class="line">rm -rf ~/.texlive  </span><br></pre></td></tr></table></figure>
+<h2 id="2-安装texlive-2013"><a href="#2-安装texlive-2013" class="headerlink" title="2.安装texlive 2013"></a>2.安装texlive 2013</h2><p>这个安装比较简单，我用的是ubuntu12.04.4。 具体步骤是，mount一下你下载的iso文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mkdir /media/texlive</span><br><span class="line">sudo mount texlive2013-20130530.iso  /media/texlive  </span><br></pre></td></tr></table></figure>
+<p>然后进入到 /media/texlive目录下，执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./install-tl  </span><br></pre></td></tr></table></figure>
+<p>提示输入的时候，输入I (大写的i，会看到提示的)<br>安装完成后，可以向/etc/profile文件的最后一行添加如下代码，注意，我的系统是64位的，你要看看你自己的系统是不是在这个目录下有latex命令。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/<span class="built_in">local</span>/texlive/2013/bin/x86_64-linux:<span class="variable">$PATH</span>  </span><br></pre></td></tr></table></figure>
+<p>如果你想使用帮助的话，还可以向～/.bashrc中添加下面两行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> MANPATH=/usr/<span class="built_in">local</span>/texlive/2013/texmf-dist/doc/man:<span class="variable">$MANPATH</span>  </span><br><span class="line"><span class="built_in">export</span> INFOPATH=/usr/<span class="built_in">local</span>/texlive/2013/texmf-dist/doc/info:<span class="variable">$INFOPATH</span>  </span><br></pre></td></tr></table></figure>
+
+<p>到这里，我一般会重启一下。<br>测试一下上面的配置是否正确：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">which</span> latex  </span><br></pre></td></tr></table></figure>
+<p>如果找到了latex，那就可以继续了，找不到的话，你需要重新看一下自己是不是没有配置好环境PATH</p>
+<h2 id="3-搞定中文字体"><a href="#3-搞定中文字体" class="headerlink" title="3.搞定中文字体"></a>3.搞定中文字体</h2><h3 id="1-测试中文字体"><a href="#1-测试中文字体" class="headerlink" title="(1)测试中文字体"></a>(1)测试中文字体</h3><p>先写一个简单的测试tex文件。起名为test.tex</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="keyword">\documentclass</span>[UTF8]&#123;ctexart&#125;  </span><br><span class="line"><span class="keyword">\begin</span>&#123;document&#125;  </span><br><span class="line">我爱中国！  </span><br><span class="line"><span class="keyword">\end</span>&#123;document&#125;  </span><br></pre></td></tr></table></figure>
+<p>然后执行如下命令编译:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">xelatex test.tex  </span><br></pre></td></tr></table></figure>
+<p>等一会，你会遇到一个错误，大致如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  </span><br><span class="line">!  </span><br><span class="line">! fontspec error: <span class="string">&quot;font-not-found&quot;</span>  </span><br><span class="line">!   </span><br><span class="line">! The font <span class="string">&quot;SimSun&quot;</span> cannot be found.  </span><br><span class="line">!   </span><br><span class="line">! See the fontspec documentation <span class="keyword">for</span> further information.  </span><br><span class="line">!   </span><br><span class="line">! For immediate <span class="built_in">help</span> <span class="built_in">type</span> H &lt;<span class="built_in">return</span>&gt;.  </span><br><span class="line">!...............................................   </span><br></pre></td></tr></table></figure>
+<p>下面就要解决这个问题。</p>
+<h3 id="2-解决中文字体问题"><a href="#2-解决中文字体问题" class="headerlink" title="(2)解决中文字体问题"></a>(2)解决中文字体问题</h3><p>错误里说了，”font-not-found”!所以问题在于Texlive找不到所示的<code>SimSun</code>字体。</p>
+<h4 id="配置Texlive，使其可以使用系统字体"><a href="#配置Texlive，使其可以使用系统字体" class="headerlink" title="配置Texlive，使其可以使用系统字体"></a>配置Texlive，使其可以使用系统字体</h4><p>参照<a target="_blank" rel="noopener" href="http://tug.org/texlive/doc/texlive-zh-cn/texlive-zh-cn.pdf">官方文档</a>的说法:</p>
+<blockquote>
+<p>XeTEX和LuaTEX可以使用任何系统安装的字体，而不只是TEX目录树中的那些。它们使用类似但不完全一致的方式实现这一功能。<br>在Windows下TEXLive提供的字体会自动为XeTEX所用。但如果你在Unix兼容的系统中安装了xetex软件包，则需要把系统配置一番XeTEX才能找到随TEXLive安装的那些字体。<br>为了进行配置，xetex 安装后(不管是初始安装还是后来安装的)都会在TEXMFSYSVAR/fonts/conf/texlive-fontconfig.conf 创建一个必需的配置文件。<br>要在整个系统中使用TEXLive的字体(假定你有足够的权限)，请依照下面的步骤来做：</p>
+</blockquote>
+<ol>
+<li>将texlive-fontconfig.conf 文件复制到 /etc/fonts/conf.d/09-texlive.conf。</li>
+<li>运行fc-cache -fsv。<br>如果你没有足够的权限执行上述操作，或者只需要把TEXLive字体提供给你自己，可以这么做：</li>
+<li>将texlive-fontconfig.conf文件复制到 <del>/.fonts.conf，其中</del>是你的主目录。</li>
+<li>运行<code>fc-cache -fv</code>。<br>你可以运行<code>fc-list</code>来查看系统字体的名称。</li>
+</ol>
+<p>由此可知，执行如下命令即可：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo cp /usr/<span class="built_in">local</span>/texlive/2014/texmf-var/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf</span><br><span class="line">sudo fc-cache -fv</span><br></pre></td></tr></table></figure>
+<p>现在texlive可以使用系统字体，但是<code>SimSun</code>字体在类UNIX中不存在，所以需要从Windows拷贝。</p>
+<h4 id="拷贝SimSun字体到系统中"><a href="#拷贝SimSun字体到系统中" class="headerlink" title="拷贝SimSun字体到系统中"></a>拷贝SimSun字体到系统中</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir ～/.fonts  </span><br><span class="line">cp * ~/.fonts  </span><br></pre></td></tr></table></figure>
+
+<p>也可以使用默认的系统文件夹，比如可以用</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir /usr/share/fonts/windowsfonts</span><br><span class="line">cp * /usr/share/fonts/windowsfonts</span><br></pre></td></tr></table></figure>
+
+<p>然后执行如下命令，修改字体权限并再次更新字体缓存：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo chmod +x *</span><br><span class="line">sudo mkfontscale  </span><br><span class="line">sudo mkfontdir  </span><br><span class="line">sudo fc-cache -fsv  </span><br></pre></td></tr></table></figure>
+
+<p>执行成功后，再做如下操作：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span>  /usr/<span class="built_in">local</span>/texlive/2013/texmf-dist/tex/latex/ctex/fontset/  </span><br><span class="line">sudo vim ctex-xecjk-winfonts.def  </span><br></pre></td></tr></table></figure>
+<p>文件定义了xeCJK字体设置，内容大致如下：</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="comment">% ctex-xecjk-winfonts.def: Windows 的 xeCJK 字体设置，默认为六种中易字体  </span></span><br><span class="line"><span class="comment">% vim:ft=tex  </span></span><br><span class="line"><span class="keyword">\setCJKmainfont</span>[BoldFont=&#123;SimHei&#125;,ItalicFont=&#123;[SIMKAI.TTF]&#125;]  </span><br><span class="line">&#123;SimSun&#125;  </span><br><span class="line"><span class="keyword">\setCJKsansfont</span>&#123;SimHei&#125;  </span><br><span class="line"><span class="keyword">\setCJKmonofont</span>&#123;[SIMFANG.TTF]&#125;  </span><br><span class="line"><span class="keyword">\setCJKfamilyfont</span>&#123;zhsong&#125;&#123;SimSun&#125;  </span><br><span class="line"><span class="keyword">\setCJKfamilyfont</span>&#123;zhhei&#125;&#123;SimHei&#125;  </span><br><span class="line"><span class="keyword">\setCJKfamilyfont</span>&#123;zhkai&#125;&#123;[SIMKAI.TTF]&#125;  </span><br><span class="line"><span class="keyword">\setCJKfamilyfont</span>&#123;zhfs&#125;&#123;[SIMFANG.TTF]&#125;  </span><br><span class="line"><span class="comment">% \setCJKfamilyfont&#123;zhli&#125;&#123;LiSu&#125;  </span></span><br><span class="line"><span class="comment">% \setCJKfamilyfont&#123;zhyou&#125;&#123;YouYuan&#125;  </span></span><br><span class="line"><span class="keyword">\newcommand</span>*&#123;<span class="keyword">\songti</span>&#125;&#123;<span class="keyword">\CJKfamily</span>&#123;zhsong&#125;&#125; <span class="comment">% 宋体  </span></span><br><span class="line"><span class="keyword">\newcommand</span>*&#123;<span class="keyword">\heiti</span>&#125;&#123;<span class="keyword">\CJKfamily</span>&#123;zhhei&#125;&#125;   <span class="comment">% 黑体  </span></span><br><span class="line"><span class="keyword">\newcommand</span>*&#123;<span class="keyword">\kaishu</span>&#125;&#123;<span class="keyword">\CJKfamily</span>&#123;zhkai&#125;&#125;  <span class="comment">% 楷书  </span></span><br><span class="line"><span class="keyword">\newcommand</span>*&#123;<span class="keyword">\fangsong</span>&#125;&#123;<span class="keyword">\CJKfamily</span>&#123;zhfs&#125;&#125; <span class="comment">% 仿宋  </span></span><br><span class="line"><span class="comment">% \newcommand*&#123;\lishu&#125;&#123;\CJKfamily&#123;zhli&#125;&#125;    % 隶书  </span></span><br><span class="line"><span class="comment">% \newcommand*&#123;\youyuan&#125;&#123;\CJKfamily&#123;zhyou&#125;&#125; % 幼圆</span></span><br><span class="line"><span class="keyword">\endinput</span>  </span><br></pre></td></tr></table></figure>
+
+<p>错误产生的原因在于上面定义的字体不存在或者找不到，所以根据已有字体名对字体名进行修改。<br>下面，打开新的终端，执行如下命令:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fc-list :lang=zh-cn  </span><br></pre></td></tr></table></figure>
+
+<p>输出大约如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">AR PL UMing TW:style=Light  </span><br><span class="line">AR PL UMing HK:style=Light  </span><br><span class="line">文泉驿等宽微米黑,文泉驛等寬微米黑,WenQuanYi Micro Hei Mono:style=Regular  </span><br><span class="line">仿宋,FangSong:style=Normal,obyčejné,Standard,Κανονικά,Regular,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta  </span><br><span class="line">標楷體,DFKai\-SB:style=Regular  </span><br><span class="line">AR PL UMing CN:style=Light  </span><br><span class="line">新宋体,NSimSun:style=常规,Regular  </span><br><span class="line">楷体,KaiTi:style=Normal,obyčejné,Standard,Κανονικά,Regular,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta  </span><br><span class="line">微软雅黑,Microsoft YaHei:style=Normal,obyčejné,Standard,Κανονικά,Regular,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta  </span><br><span class="line">Adobe 楷体 Std,Adobe Kaiti Std,Adobe Kaiti Std R,Adobe 楷体 Std R:style=R,Regular  </span><br><span class="line">Microsoft YaHei UI,Microsoft YaHei UI Light:style=Light,Regular  </span><br></pre></td></tr></table></figure>
+
+<p><strong>注意:输出中有<code>SimSun</code>字样才表示上述两步成功,否则可能复制相关字体不完全。</strong><br>下面需要做的就是将ctex-xecjk-winfonts.def中的字体SIMFANG.TTF改为FangSong，SIMKAI.TTF改为KaiTi。</p>
+<p>如果你用vim,可以在vim里执行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">:%s/\[SIMFANG.TTF\]/FangSong/g  </span><br><span class="line">:%s/\[SIMKAI.TTF\]/KaiTi/g  </span><br></pre></td></tr></table></figure>
+<h3 id="3-测试问题解决"><a href="#3-测试问题解决" class="headerlink" title="(3)测试问题解决"></a>(3)测试问题解决</h3><p>重新执行一下，那个编译命令吧：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">xelatex test.tex  </span><br></pre></td></tr></table></figure>
+<p>现在应该没有问题了。</p>
+<h3 id="4-调用其他字体"><a href="#4-调用其他字体" class="headerlink" title="(4)调用其他字体"></a>(4)调用其他字体</h3><p>虽然上述方法解决了一些问题，但却还是不能使用微软雅黑之类的字体，下面是解决方案<br>测试文档是：</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="keyword">\documentclass</span>&#123;ctexart&#125;  </span><br><span class="line"><span class="keyword">\setCJKfamilyfont</span>&#123;Microsoft YaHei&#125;&#123;微软雅黑&#125;</span><br><span class="line"><span class="keyword">\newcommand</span>&#123;<span class="keyword">\yah</span>&#125;&#123;<span class="keyword">\CJKfamily</span>&#123;Microsoft YaHei&#125;&#125;  </span><br><span class="line"><span class="keyword">\begin</span>&#123;document&#125;  </span><br><span class="line">注意：UTF-8编码，用XeLaTeX编译，&#123;<span class="keyword">\yah</span> 这里示例为微软雅黑&#125;。<span class="keyword">\\</span>  </span><br><span class="line">效果还可以。  </span><br><span class="line"><span class="keyword">\end</span>&#123;document&#125;  </span><br></pre></td></tr></table></figure>
+<p>效果是这样：<br><img src="/2015/02/12/install-tex/tex.png" alt="tex"><br>大功告成。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/Tex/" rel="tag"># Tex</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/02/06/%E7%BC%96%E7%A8%8B/" rel="prev" title="当我们在谈论编程的时候，我们在谈论什么">
+                  <i class="fa fa-chevron-left"></i> 当我们在谈论编程的时候，我们在谈论什么
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/02/13/pandoc/" rel="next" title="Pandoc的使用">
+                  Pandoc的使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

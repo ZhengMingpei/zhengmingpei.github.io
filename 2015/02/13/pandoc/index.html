@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言Markdown自诞生以来就具备极低的入门难度，使书写博客变得简单。但是在某些时候，我们还是需要其他格式的文本，比如html,pdf，Pandoc正是这样一个用来实现文本格式转换的渲染器。 安装官网在这里，有各个平台的安装说明。对于debian系列的Linux发行改版，使用包管理器进行安装是最方便的，即： sudo apt-get install pandoc   不推荐Windows平台。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandoc的使用">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2015/02/13/pandoc/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="前言Markdown自诞生以来就具备极低的入门难度，使书写博客变得简单。但是在某些时候，我们还是需要其他格式的文本，比如html,pdf，Pandoc正是这样一个用来实现文本格式转换的渲染器。 安装官网在这里，有各个平台的安装说明。对于debian系列的Linux发行改版，使用包管理器进行安装是最方便的，即： sudo apt-get install pandoc   不推荐Windows平台。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-02-13T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T04:06:42.339Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="工具软件">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2015/02/13/pandoc/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2015/02/13/pandoc/","path":"2015/02/13/pandoc/","title":"Pandoc的使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Pandoc的使用 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Markdown-gt-html"><span class="nav-number">3.1.</span> <span class="nav-text">Markdown-&gt;html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Markdown-gt-PDF"><span class="nav-number">3.2.</span> <span class="nav-text">Markdown-&gt;PDF</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2015/02/13/pandoc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pandoc的使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-02-13 15:00:00" itemprop="dateCreated datePublished" datetime="2015-02-13T15:00:00+08:00">2015-02-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 12:06:42" itemprop="dateModified" datetime="2021-11-28T12:06:42+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">大学</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Markdown自诞生以来就具备极低的入门难度，使书写博客变得简单。但是在某些时候，我们还是需要其他格式的文本，比如html,pdf，Pandoc正是这样一个用来实现文本格式转换的渲染器。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官网在<a target="_blank" rel="noopener" href="http://johnmacfarlane.net/pandoc/">这里</a>，有各个平台的安装说明。对于debian系列的Linux发行改版，使用包管理器进行安装是最方便的，即：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install pandoc</span><br></pre></td></tr></table></figure>
+
+
+<p>不推荐Windows平台。</p>
+<p>注意：PDF格式比较特殊，需要LaTeX，官网推荐使用Texlive，安装方法即：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install texlive</span><br></pre></td></tr></table></figure>
+
+<p>因为还要处理中文问题之类，我认为去<a target="_blank" rel="noopener" href="https://www.tug.org/texlive/">Texlive官网</a>下载一个ISO镜像安装最为方便，安装步骤可见<a href="/linux%E9%85%8D%E7%BD%AE/2014/07/07/install-tex/">我的博客</a>。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="Markdown-gt-html"><a href="#Markdown-gt-html" class="headerlink" title="Markdown-&gt;html"></a>Markdown-&gt;html</h3><p>首先写一个Markdown文件，命名为<code>test.md</code>,用来测试的内容如下：</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="section">Ubuntu12.04 64bit安装后要做的配置</span></span><br><span class="line"><span class="section">========================</span></span><br><span class="line">最近把系统换成了Ubuntu12.04.04 64bit单系统，遇到些配置的问题</span><br><span class="line"></span><br><span class="line"><span class="section">## 1.给浏览器安装Flash。</span></span><br><span class="line"></span><br><span class="line">进入Adobe的[<span class="string">官方网址</span>](<span class="link">http://get.adobe.com/cn/flashplayer/</span>)，选择APT适用于Ubuntu10.04+，跳出请选择打开的程序，选择<span class="code">`/usr/bin/apturl`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 2.卸载无用的预装软件，比如通讯工具。</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 3.安装Vim,VirturlBox。</span></span><br><span class="line">VirtualBox共享文件夹可能存在问题比如访问无权限，可能需要参照[<span class="string">这个文章</span>](<span class="link">http://www.crifan.com/can_not_access_share_folder_in_ubuntu_virtualbox/</span>)。</span><br><span class="line">关键是添加用户到boxsf组中，关键命令是：</span><br><span class="line"></span><br><span class="line"><span class="code">` sudo adduser yourname vboxsf `</span> </span><br><span class="line"></span><br><span class="line"><span class="section">## 4.安装MP3,RMVB播放的插件，打开7z压缩包的插件。</span></span><br><span class="line">根据系统提示安装。</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pandoc --ascii test.md -o out.html</span><br></pre></td></tr></table></figure>
+
+<p>如果安装成功，将会生成一个相应的html文件，其中<code>--ascii</code>选项是为了使中文不发生乱码。</p>
+<h3 id="Markdown-gt-PDF"><a href="#Markdown-gt-PDF" class="headerlink" title="Markdown-&gt;PDF"></a>Markdown-&gt;PDF</h3><p>Markdown文件同上，不过要按照上文所说，安装好Texlive，执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pandoc test.md -o out.pdf --latex-engine=xelatex</span><br></pre></td></tr></table></figure>
+
+<p>如果生成的PDF中没有中文，说明字体设置上存在问题，本部分需要参考<a target="_blank" rel="noopener" href="http://zhouyichu.com/misc/Pandoc.html">Flyaway’s Blog</a>，使用<a target="_blank" rel="noopener" href="https://github.com/tzengyuxio/pages/tree/gh-pages/pandoc">tzengyuxio</a>的<code>pm-template.latex4</code>模板替换<code>/usr/share/pandoc/data/templates/default.latex</code>，而且要将里面的字体改为系统具有的字体比如<code>SimSun</code>，然后就OK了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/%E5%B7%A5%E5%85%B7%E8%BD%AF%E4%BB%B6/" rel="tag"># 工具软件</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/02/12/install-tex/" rel="prev" title="安装TeX及中文支持">
+                  <i class="fa fa-chevron-left"></i> 安装TeX及中文支持
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/03/16/%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/" rel="next" title="远程桌面，让工作更高效">
+                  远程桌面，让工作更高效 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

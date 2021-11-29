@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="init()初始化首次初始化进行首次初始化，应用反射机制，分析app对象。 如果@ReportCrashes中没有做设置则报错，否则做第二步初始化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ACRA源码分析总结">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2016/08/10/ACRA%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="init()初始化首次初始化进行首次初始化，应用反射机制，分析app对象。 如果@ReportCrashes中没有做设置则报错，否则做第二步初始化。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-08-10T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T03:14:49.703Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="编程">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2016/08/10/ACRA%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2016/08/10/ACRA%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/","path":"2016/08/10/ACRA源码分析总结/","title":"ACRA源码分析总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ACRA源码分析总结 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">init()初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E6%AC%A1%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">首次初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">第二步初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">第三步初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">最终初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">init()流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#isACRASenderServiceProcess"><span class="nav-number">2.1.</span> <span class="nav-text">isACRASenderServiceProcess()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#supportedAndroidVersion-amp-amp-config-null-amp-amp-mApplication-null"><span class="nav-number">2.2.</span> <span class="nav-text">supportedAndroidVersion &amp;&amp; config !&#x3D;null &amp;&amp; mApplication !&#x3D; null</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ErrorReporter%E5%AF%B9%E8%B1%A1-%E6%A0%B8%E5%BF%83%E9%83%A8%E5%88%86"><span class="nav-number">2.3.</span> <span class="nav-text">ErrorReporter对象(核心部分)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#In-ACRA-java"><span class="nav-number">2.3.1.</span> <span class="nav-text">In ACRA.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#In-ErrorReporter-java"><span class="nav-number">2.3.2.</span> <span class="nav-text">In ErrorReporter.java</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#UncaughtExceptionHandler%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">UncaughtExceptionHandler接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ErrorReporter%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">ErrorReporter构造器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#In-ReportBuilder-java"><span class="nav-number">2.3.3.</span> <span class="nav-text">In ReportBuilder.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReportExecutor"><span class="nav-number">2.3.4.</span> <span class="nav-text">ReportExecutor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#In-CrashReportDataFactory-java"><span class="nav-number">2.3.5.</span> <span class="nav-text">In CrashReportDataFactory.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#In-CrashReportData-java"><span class="nav-number">2.3.6.</span> <span class="nav-text">In CrashReportData.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createCrashData"><span class="nav-number">2.3.7.</span> <span class="nav-text">createCrashData</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OnSharedPreferenceChangeListener"><span class="nav-number">2.4.</span> <span class="nav-text">OnSharedPreferenceChangeListener</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2016/08/10/ACRA%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ACRA源码分析总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-08-10 15:00:00" itemprop="dateCreated datePublished" datetime="2016-08-10T15:00:00+08:00">2016-08-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 11:14:49" itemprop="dateModified" datetime="2021-11-28T11:14:49+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%9C%A8%E5%8C%97%E4%BA%AC/" itemprop="url" rel="index"><span itemprop="name">在北京</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="init-初始化"><a href="#init-初始化" class="headerlink" title="init()初始化"></a>init()初始化</h2><h3 id="首次初始化"><a href="#首次初始化" class="headerlink" title="首次初始化"></a>首次初始化</h3><p>进行首次初始化，应用反射机制，分析app对象。</p>
+<p>如果<code>@ReportCrashes</code>中没有做设置则报错，否则做第二步初始化。</p>
+<span id="more"></span>
+
+<p><code>init(app, new ConfigurationBuilder(app))</code>,构造一个ConfigurationBuilder，放置<code>@ReportCrashes</code>中声明的设置。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="meta">@NonNull</span> Application app)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> ReportsCrashes reportsCrashes = app.getClass().getAnnotation(ReportsCrashes.class);</span><br><span class="line">        <span class="keyword">if</span> (reportsCrashes == <span class="keyword">null</span>) &#123;</span><br><span class="line">            log.e(LOG_TAG, <span class="string">&quot;ACRA#init(Application) called but no ReportsCrashes annotation on Application &quot;</span> + app.getPackageName());</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        init(app, <span class="keyword">new</span> ConfigurationBuilder(app));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步初始化"><a href="#第二步初始化" class="headerlink" title="第二步初始化"></a>第二步初始化</h3><p>进行第二步初始化，向第三步初始化增加一个布尔传入参数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="meta">@NonNull</span> Application app, <span class="meta">@NonNull</span> ConfigurationBuilder builder)</span> </span>&#123;</span><br><span class="line">        init(app, builder, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第三步初始化"><a href="#第三步初始化" class="headerlink" title="第三步初始化"></a>第三步初始化</h3><p>进行第三步初始化，<code>builder.build()</code>，<br>Builds the ACRAConfiguration which will be used to configure ACRA.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="meta">@NonNull</span> Application app, <span class="meta">@NonNull</span> ConfigurationBuilder builder, <span class="keyword">boolean</span> checkReportsOnApplicationStart)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            init(app, builder.build(), checkReportsOnApplicationStart);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ACRAConfigurationException e) &#123;</span><br><span class="line">            log.w(LOG_TAG, <span class="string">&quot;Configuration Error - ACRA not started : &quot;</span> + e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="最终初始化"><a href="#最终初始化" class="headerlink" title="最终初始化"></a>最终初始化</h3><p>init()的最终初始化</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="meta">@NonNull</span> Application app, <span class="meta">@NonNull</span> ACRAConfiguration config, <span class="keyword">boolean</span> checkReportsOnApplicationStart)</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="init-流程"><a href="#init-流程" class="headerlink" title="init()流程"></a>init()流程</h2><h3 id="isACRASenderServiceProcess"><a href="#isACRASenderServiceProcess" class="headerlink" title="isACRASenderServiceProcess()"></a>isACRASenderServiceProcess()</h3><p>如果当前进程正在运行SenderService，返回True。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> senderServiceProcess = isACRASenderServiceProcess();</span><br></pre></td></tr></table></figure>
+
+<p>isACRASenderServiceProcess()判断SenderService方法：<br>读取<code>/proc/self/cmdline</code>文件内容，获取进程启动时的命令行参数，根据其末尾是否带有<code>:acra</code>判断。<br>ACRA.java中与之相关的设置是：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ACRA_PRIVATE_PROCESS_NAME= <span class="string">&quot;:acra&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果senderServiceProcess为<code>True</code>，则说明SenderService在运行，不会捕捉异常，仅执行发送。</p>
+<blockquote>
+<p>Not initialising ACRA to listen for uncaught Exceptions as this is the SendWorker process and <strong>we only send reports, we don’t capture them to avoid infinite loops</strong></p>
+</blockquote>
+<h3 id="supportedAndroidVersion-amp-amp-config-null-amp-amp-mApplication-null"><a href="#supportedAndroidVersion-amp-amp-config-null-amp-amp-mApplication-null" class="headerlink" title="supportedAndroidVersion &amp;&amp; config !=null &amp;&amp; mApplication != null"></a>supportedAndroidVersion &amp;&amp; config !=null &amp;&amp; mApplication != null</h3><p>一系列判断和检查。</p>
+<h3 id="ErrorReporter对象-核心部分"><a href="#ErrorReporter对象-核心部分" class="headerlink" title="ErrorReporter对象(核心部分)"></a>ErrorReporter对象(核心部分)</h3><h4 id="In-ACRA-java"><a href="#In-ACRA-java" class="headerlink" title="In ACRA.java"></a>In ACRA.java</h4><p>建立ErrorReporter对象，传入上面的参数，捕获异常和发送报告。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">errorReporterSingleton = <span class="keyword">new</span> ErrorReporter(mApplication, configProxy, prefs,</span><br><span class="line"> enableAcra, supportedAndroidVersion, !senderServiceProcess);</span><br></pre></td></tr></table></figure>
+
+<h4 id="In-ErrorReporter-java"><a href="#In-ErrorReporter-java" class="headerlink" title="In ErrorReporter.java"></a>In ErrorReporter.java</h4><h5 id="UncaughtExceptionHandler接口"><a href="#UncaughtExceptionHandler接口" class="headerlink" title="UncaughtExceptionHandler接口"></a>UncaughtExceptionHandler接口</h5><p>ErrorReporter实现了Thread.UncaughtExceptionHandler接口，在线程死亡之前，,可以将异常传递到ErrorReporter处理器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorReporter</span> <span class="keyword">implements</span> <span class="title">Thread</span>.<span class="title">UncaughtExceptionHandler</span></span></span><br></pre></td></tr></table></figure>
+
+<h5 id="ErrorReporter构造器"><a href="#ErrorReporter构造器" class="headerlink" title="ErrorReporter构造器"></a>ErrorReporter构造器</h5><p>enabled   Whether this ErrorReporter should capture Exceptions and forward their reports.<br>listenForUncaughtExceptions   Whether to listen for uncaught Exceptions.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ErrorReporter(<span class="meta">@NonNull</span> Application context, <span class="meta">@NonNull</span> ACRAConfiguration config, <span class="meta">@NonNull</span> SharedPreferences prefs,</span><br><span class="line">                  <span class="keyword">boolean</span> enabled, <span class="keyword">boolean</span> supportedAndroidVersion, <span class="keyword">boolean</span> listenForUncaughtExceptions)</span><br></pre></td></tr></table></figure>
+
+<p>创建一个CrashReportDataFactory对象和一个Thread.UncaughtExceptionHandler，然后设置默认的异常处理器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//..</span></span><br><span class="line">crashReportDataFactory = <span class="keyword">new</span> CrashReportDataFactory(<span class="keyword">this</span>.context, config, prefs, appStartDate, initialConfiguration);</span><br><span class="line"><span class="keyword">final</span> Thread.UncaughtExceptionHandler defaultExceptionHandler;</span><br><span class="line"><span class="keyword">if</span> (listenForUncaughtExceptions) &#123;</span><br><span class="line">            defaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();</span><br><span class="line">            Thread.setDefaultUncaughtExceptionHandler(<span class="keyword">this</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            defaultExceptionHandler = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Other setting.</span></span><br><span class="line"><span class="keyword">final</span> ReportPrimer reportPrimer = getReportPrimer(config);</span><br><span class="line">reportExecutor = <span class="keyword">new</span> ReportExecutor(context, config, crashReportDataFactory, lastActivityManager, defaultExceptionHandler, reportPrimer);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>UncaughtExceptionHandler对象</li>
+</ul>
+<p>UncaughtExceptionHandler捕获全局异常</p>
+<ul>
+<li>setDefaultUncaughtExceptionHandler()</li>
+</ul>
+<p>为所有线程安装一个默认的处理器，这里设置为<code>this</code>。</p>
+<ul>
+<li>uncaughtException()</li>
+</ul>
+<p>实现uncaughtException()方法，处理器中真正完成处理的部分。</p>
+<p>线程的所有未被catch的Exception被传递到这个方法，将出错的Thread和对象Throwable传入一个新建的ReportBuilder对象。</p>
+<p>新建的ReportBuilder对象执行build方法，传入上面创建的ReportExecutor的对象reportExecutor。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">uncaughtException</span><span class="params">(<span class="meta">@Nullable</span> Thread t, <span class="meta">@NonNull</span> Throwable e)</span></span>&#123;</span><br><span class="line">            <span class="keyword">new</span> ReportBuilder()</span><br><span class="line">                .uncaughtExceptionThread(t)</span><br><span class="line">                .exception(e)</span><br><span class="line">                .endApplication()</span><br><span class="line">                .build(reportExecutor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="In-ReportBuilder-java"><a href="#In-ReportBuilder-java" class="headerlink" title="In ReportBuilder.java"></a>In ReportBuilder.java</h4><p>Assembles and sends the crash report.</p>
+<p>build方法，调用reportExecutor的execute方法。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="meta">@NonNull</span> ReportExecutor reportExecutor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (message == <span class="keyword">null</span> &amp;&amp; exception == <span class="keyword">null</span>) &#123;</span><br><span class="line">            message = <span class="string">&quot;Report requested by developer&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        reportExecutor.execute(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ReportExecutor"><a href="#ReportExecutor" class="headerlink" title="ReportExecutor"></a>ReportExecutor</h4><p>ReportExecutor的构造器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ReportExecutor(android.content.Context context, ACRAConfiguration config,</span><br><span class="line">CrashReportDataFactory crashReportDataFactory, LastActivityManager lastActivityManager,</span><br><span class="line"> java.lang.Thread.UncaughtExceptionHandler defaultExceptionHandler, ReportPrimer reportPrimer) </span><br></pre></td></tr></table></figure>
+
+<p>Try to send a report, if an error occurs stores a report file for a later attempt.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="meta">@NonNull</span> <span class="keyword">final</span> ReportBuilder reportBuilder)</span> </span>&#123;</span><br><span class="line"><span class="comment">//..</span></span><br><span class="line"><span class="comment">// Prime this crash report with any extra data.</span></span><br><span class="line">reportPrimer.primeReport(context, reportBuilder);</span><br><span class="line"><span class="comment">//..使用createCrashData 将 reportBuilder的内容传递到一个CrashReportData对象。</span></span><br><span class="line"><span class="keyword">final</span> CrashReportData crashReportData = crashReportDataFactory.createCrashData(reportBuilder);</span><br><span class="line"><span class="comment">//..将CrashReportData的内容写入文件。</span></span><br><span class="line"><span class="keyword">final</span> File reportFile = getReportFileName(crashReportData);</span><br><span class="line">saveCrashReportFile(reportFile, crashReportData);</span><br><span class="line"><span class="comment">//根据不同的reportingInteractionMode比如Dialog或者TOAST等进行处理和发送</span></span><br><span class="line">startSendingReports(sendOnlySilentReports);</span><br><span class="line"><span class="comment">//..</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="In-CrashReportDataFactory-java"><a href="#In-CrashReportDataFactory-java" class="headerlink" title="In CrashReportDataFactory.java"></a>In CrashReportDataFactory.java</h4><ul>
+<li>CrashReportDataFactory对象</li>
+</ul>
+<p>负责给一个Exception创建CrashReportData.</p>
+<p>Also responsible for holding the custom data to send with each report. </p>
+<ul>
+<li>createCrashData方法</li>
+</ul>
+<p>Collects crash data, return CrashReportData</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CrashReportData <span class="title">createCrashData</span><span class="params">(<span class="meta">@NonNull</span> ReportBuilder builder)</span> </span></span><br></pre></td></tr></table></figure>
+
+<h4 id="In-CrashReportData-java"><a href="#In-CrashReportData-java" class="headerlink" title="In CrashReportData.java"></a>In CrashReportData.java</h4><p>Stores a crash reports data with ReportField enum values as keys. </p>
+<p>This is basically the source of Properties adapted to extend an <strong>EnumMap</strong>(枚举映射)<br>instead of <strong>Hashtable</strong> and with a few tweaks to avoid losing crazy amounts<br>of android time in the generation of a date comment when storing to file.</p>
+<p>CrashReportData构造器，应用反射机制，使用<code>.class</code>获取ReportField的Class对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CrashReportData</span> <span class="keyword">extends</span> <span class="title">EnumMap</span>&lt;<span class="title">ReportField</span>, <span class="title">String</span>&gt;</span>&#123;</span><br><span class="line"><span class="comment">//..</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">CrashReportData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       		 <span class="keyword">super</span>(ReportField.class);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getProperty</span><span class="params">(<span class="meta">@NonNull</span> ReportField key)</span> </span>&#123;</span><br><span class="line">       		 <span class="keyword">return</span> <span class="keyword">super</span>.get(key);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> JSONObject <span class="title">toJSON</span><span class="params">()</span> <span class="keyword">throws</span> JSONReportException </span>&#123;</span><br><span class="line">       		 <span class="keyword">return</span> JSONReportBuilder.buildJSONReport(<span class="keyword">this</span>);</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">//..</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="createCrashData"><a href="#createCrashData" class="headerlink" title="createCrashData"></a>createCrashData</h4><p>收集数据部分。</p>
+<p>CrashReportDataFactory.java中createCrashData方法，对于DROPBOX的收集数据部分是与logcat的收集数据部分放在一个代码块中的。</p>
+<p>在这一部分，ACRA的代码注释中，有这样的描述：</p>
+<blockquote>
+<p>Before JellyBean, this required the READ_LOGS permission<br>Since JellyBean，READ_LOGS is not granted to third-party apps anymore for security reasons.<br>Though, we can call logcat without any permission and still get traces related to our app.</p>
+</blockquote>
+<p>可见，如果Android版本高于JellyBean，无需配置READ_LOGS权限，即可读取 logcat与当前App相关的信息；然而，对于是否能够读取Drop Box的信息，ACRA的源码中并没有提及。</p>
+<p>实测，debug信息中有输出READ_LOGS granted! ACRA can include LogCat and DropBox data.，并且没有报错Error while retrieving DROPBOX data ，证明下面的代码可以正常执行到DropboxCollector().read()的地方。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> hasReadLogsPermission = pm.hasPermission(Manifest.permission.READ_LOGS) || Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN;</span><br><span class="line">	<span class="keyword">if</span> (prefs.getBoolean(ACRA.PREF_ENABLE_SYSTEM_LOGS, <span class="keyword">true</span>) &amp;&amp; hasReadLogsPermission) &#123;</span><br><span class="line">	      <span class="keyword">if</span> (ACRA.DEV_LOGGING)</span><br><span class="line">	      ACRA.log.d(LOG_TAG, <span class="string">&quot;READ_LOGS granted! ACRA can include LogCat and DropBox data.&quot;</span>);</span><br><span class="line">	      <span class="keyword">if</span> (crashReportFields.contains(DROPBOX)) &#123;</span><br><span class="line">	 <span class="keyword">try</span> &#123;</span><br><span class="line">	      crashReportData.put(DROPBOX, <span class="keyword">new</span> DropBoxCollector().read(context, config));</span><br><span class="line">	 &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</span><br><span class="line">	     ACRA.log.e(LOG_TAG, <span class="string">&quot;Error while retrieving DROPBOX data&quot;</span>, e);</span><br><span class="line">	 &#125;</span><br><span class="line">      <span class="comment">//..</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>In DropBoxCollector.java</li>
+</ul>
+<p>构造器中设置SYSYTEM_TAGS等。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DropBoxCollector</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] SYSTEM_TAGS = &#123;<span class="string">&quot;system_app_anr&quot;</span>, <span class="string">&quot;system_app_wtf&quot;</span>, <span class="string">&quot;system_app_crash&quot;</span>,</span><br><span class="line">	 <span class="string">&quot;system_server_anr&quot;</span>, <span class="string">&quot;system_server_wtf&quot;</span>, <span class="string">&quot;system_server_crash&quot;</span>, <span class="string">&quot;BATTERY_DISCHARGE_INFO&quot;</span>,</span><br><span class="line">	 <span class="string">&quot;SYSTEM_RECOVERY_LOG&quot;</span>, <span class="string">&quot;SYSTEM_BOOT&quot;</span>, <span class="string">&quot;SYSTEM_LAST_KMSG&quot;</span>, <span class="string">&quot;APANIC_CONSOLE&quot;</span>, <span class="string">&quot;APANIC_THREADS&quot;</span>,</span><br><span class="line">	 <span class="string">&quot;SYSTEM_RESTART&quot;</span>, <span class="string">&quot;SYSTEM_TOMBSTONE&quot;</span>, <span class="string">&quot;data_app_strictmode&quot;</span>&#125;;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String NO_RESULT = <span class="string">&quot;N/A&quot;</span>；</span><br><span class="line">       <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>read()方法，提取drop box中的信息，返回字符串。主要步骤如下：</p>
+<p>使用一个ArrayList对象保存设置的SYSYTEM_TAGS和additionalTags，进行提取信息的操作，如果捕捉到异常，则输出DropBoxManager not available.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">read</span><span class="params">(<span class="meta">@NonNull</span> Context context, <span class="meta">@NonNull</span> ACRAConfiguration config)</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">try</span> &#123;</span><br><span class="line">	 <span class="keyword">final</span> DropBoxManager dropbox = (DropBoxManager) context.getSystemService(Context.DROPBOX_SERVICE);</span><br><span class="line">	<span class="keyword">final</span> List&lt;String&gt; tags = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">	 <span class="keyword">if</span> (config.includeDropBoxSystemTags()) &#123;</span><br><span class="line">	 tags.addAll(Arrays.asList(SYSTEM_TAGS));</span><br><span class="line">	 &#125;</span><br><span class="line">	<span class="keyword">final</span> StringBuilder dropboxContent = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	 <span class="comment">//..for(.....) add</span></span><br><span class="line">	 &#125;</span><br><span class="line">	 <span class="keyword">return</span> dropboxContent.toString();</span><br><span class="line">	 &#125;<span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">	 <span class="keyword">if</span> (ACRA.DEV_LOGGING) ACRA.log.d(LOG_TAG, <span class="string">&quot;DropBoxManager not available.&quot;</span>);</span><br><span class="line">	 &#125;</span><br><span class="line">	 <span class="keyword">return</span> NO_RESULT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行for循环，先调用getNextEntry(String tag, long msec) 从drop box获取在特定时间mesc后的下一个entry。</p>
+<p>如果entry不为null，则调用 getText(int maxBytes) 返回entry的uncompressed text contents，追加到最终返回的字符串中，MaxBytes为返回String的最大值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> StringBuilder dropboxContent = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">for</span> (String tag : tags) &#123;</span><br><span class="line">	 dropboxContent.append(<span class="string">&quot;Tag: &quot;</span>).append(tag).append(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">	 DropBoxManager.Entry entry = dropbox.getNextEntry(tag, time);</span><br><span class="line">	 <span class="keyword">if</span> (entry == <span class="keyword">null</span>) &#123;</span><br><span class="line">	 dropboxContent.append(<span class="string">&quot;Nothing.&quot;</span>).append(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">	 <span class="keyword">continue</span>;</span><br><span class="line">	       &#125;</span><br><span class="line">	 <span class="keyword">while</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">	 <span class="keyword">final</span> <span class="keyword">long</span> msec = entry.getTimeMillis();</span><br><span class="line">	 calendar.setTimeInMillis(msec);</span><br><span class="line">	dropboxContent.append(<span class="string">&#x27;@&#x27;</span>).append(dateFormat.format(calendar.getTime())).append(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">	 <span class="keyword">final</span> String text = entry.getText(<span class="number">500</span>);</span><br><span class="line">	 <span class="keyword">if</span> (text != <span class="keyword">null</span>) &#123;</span><br><span class="line">	 dropboxContent.append(<span class="string">&quot;Text: &quot;</span>).append(text).append(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">	 &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	 dropboxContent.append(<span class="string">&quot;Not Text!&quot;</span>).append(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">	 &#125;</span><br><span class="line">          entry.close();</span><br><span class="line">          entry = dropbox.getNextEntry(tag, msec);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实测的Debug结果显示，运行过程输出DropBoxManager not available. 证明在read()方法中出现异常，导致无法正常获取Drop Box的信息。</p>
+<h3 id="OnSharedPreferenceChangeListener"><a href="#OnSharedPreferenceChangeListener" class="headerlink" title="OnSharedPreferenceChangeListener"></a>OnSharedPreferenceChangeListener</h3><p>We HAVE to keep a reference otherwise the listener could be garbage.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mPrefListener = <span class="keyword">new</span> OnSharedPreferenceChangeListener()</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/" rel="tag"># 软件测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/02/03/vim-youcompleteme/" rel="prev" title="vim配置youcompleteme插件">
+                  <i class="fa fa-chevron-left"></i> vim配置youcompleteme插件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/09/05/%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/" rel="next" title="使用脚本从网页批量下载文件">
+                  使用脚本从网页批量下载文件 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

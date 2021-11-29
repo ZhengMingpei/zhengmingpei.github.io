@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhengmingpei.gitee.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="BeforeBash Shell具备强大的功能，结合linux下的很多命令行工具，可以高效地完成很多任务。 比如，在做安卓应用的兼容性测试中，需要获取大量的应用给待测设备安装，那么在这种情况下，写一个脚本，可以高效地完成这个任务。以此为例，这篇博客的任务就是，使用脚本从网页批量下载安卓应用APK文件。 Html我计划下载的文件在这个网址，这是百度的安卓应用商店下面的一个排行榜。 查看这个html页">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用脚本从网页批量下载文件">
+<meta property="og:url" content="https://zhengmingpei.gitee.io/2016/09/05/%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="郑明培的个人博客">
+<meta property="og:description" content="BeforeBash Shell具备强大的功能，结合linux下的很多命令行工具，可以高效地完成很多任务。 比如，在做安卓应用的兼容性测试中，需要获取大量的应用给待测设备安装，那么在这种情况下，写一个脚本，可以高效地完成这个任务。以此为例，这篇博客的任务就是，使用脚本从网页批量下载安卓应用APK文件。 Html我计划下载的文件在这个网址，这是百度的安卓应用商店下面的一个排行榜。 查看这个html页">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-09-05T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-28T03:18:20.829Z">
+<meta property="article:author" content="zhengmingpei">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="脚本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhengmingpei.gitee.io/2016/09/05/%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhengmingpei.gitee.io/2016/09/05/%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/","path":"2016/09/05/使用脚本从网页批量下载文件/","title":"使用脚本从网页批量下载文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用脚本从网页批量下载文件 | 郑明培的个人博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">郑明培的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Before"><span class="nav-number">1.</span> <span class="nav-text">Before</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Html"><span class="nav-number">2.</span> <span class="nav-text">Html</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%93%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">抓取数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text">批量下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%BA%94%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">扩展应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E9%AB%98%E7%BA%A7"><span class="nav-number">6.</span> <span class="nav-text">更高级</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengmingpei</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengmingpei" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengmingpei" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zhengmingpei" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zhengmingpei" rel="noopener" target="_blank">gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/32918983" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;32918983" rel="noopener" target="_blank">bilibili</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengmingpei.gitee.io/2016/09/05/%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%8E%E7%BD%91%E9%A1%B5%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengmingpei">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑明培的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用脚本从网页批量下载文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-09-05 15:00:00" itemprop="dateCreated datePublished" datetime="2016-09-05T15:00:00+08:00">2016-09-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-28 11:18:20" itemprop="dateModified" datetime="2021-11-28T11:18:20+08:00">2021-11-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%9C%A8%E5%8C%97%E4%BA%AC/" itemprop="url" rel="index"><span itemprop="name">在北京</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Before"><a href="#Before" class="headerlink" title="Before"></a>Before</h2><p>Bash Shell具备强大的功能，结合linux下的很多命令行工具，可以高效地完成很多任务。</p>
+<p>比如，在做安卓应用的兼容性测试中，需要获取大量的应用给待测设备安装，那么在这种情况下，写一个脚本，可以高效地完成这个任务。以此为例，这篇博客的任务就是，使用脚本从网页批量下载安卓应用APK文件。</p>
+<h2 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h2><p>我计划下载的文件在<a target="_blank" rel="noopener" href="http://shouji.baidu.com/rank/features/classic/">这个网址</a>，这是百度的安卓应用商店下面的一个排行榜。</p>
+<p>查看这个html页面可以看到下面显示的应用存在以下部分：</p>
+<span id="more"></span>
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;app-detail&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;icon&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">data-default</span>=<span class="string">&quot;/static/mobres/img/default_app_110.png&quot;</span> <span class="attr">class</span>=<span class="string">&quot;imagefix&quot;</span> <span class="attr">src</span>=<span class="string">&quot;http://timg01.baidu-img.cn/timg?mobres&amp;quality=80&amp;size=b220_220&amp;sec=1473090639&amp;di=31d539f1c8c56754a29e047f5d2b9a5a&amp;src=http%3A%2F%2Fb.hiphotos.bdimg.com%2Fwisegame%2Fpic%2Fitem%2Fd78f8c5494eef01fc33f1f7de8fe9925bc317d5b.jpg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;优酷&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;mask mask1 mask-110&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;name&quot;</span>&gt;</span>优酷<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;down-size&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;down&quot;</span>&gt;</span>5.4亿下载<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;size&quot;</span>&gt;</span>31.5MB<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;down-btn&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;inst-btn-big quickdown&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">onclick</span>=<span class="string">&quot;bd_app_dl_quick(this,event);&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data-action</span>=<span class="string">&quot;software&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data-mod</span>=<span class="string">&quot;tophot&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data-tj</span>=<span class="string">&quot;software_9828067_1827869107_优酷&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data-pos</span>=<span class="string">&quot;13&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_type</span>=<span class="string">&quot;apk&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_url</span>=<span class="string">&quot;http://p.gdown.baidu.com/fce3e533d647c8b825186041cbca68e0217a8ddd6615f593dbda4263bf62b22c3fd421044f23ba016ef241b186d81398fbfc2732604a6f4084a5f5a2f9f03f3dc58f29b5df2eeb11ce26a71c4ba0fd4d07d0b98eecdbb37652311d4a11be76002a2ea73b922207bcbf36f315f247778141d6de44c67c9b69d36d23057c857205a2b41e15ccc414e3160664fa576ae82f&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_name</span>=<span class="string">&quot;优酷&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_detail_type</span>=<span class="string">&quot;app&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_package</span>=<span class="string">&quot;com.youku.phone&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_versionname</span>=<span class="string">&quot;5.8.2&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_icon</span>=<span class="string">&quot;http://d.hiphotos.bdimg.com/wisegame/pic/item/5a12b31bb051f819fd2d10f2d2b44aed2e73e77a.jpg&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_from</span>=<span class="string">&quot;1015019e&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">data_size</span>=<span class="string">&quot;33028082&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">em</span>&gt;</span>装进手机<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>可以看到应用的信息都在里面，包括应用名称data_name, 应用版本data_versionname, 应用下载链接data_url.</p>
+<p>所以进行批量下载的思路就简单了，即：抓取以上这些数据，通过命令行工具根据下载链接下载文件。</p>
+<h2 id="抓取数据"><a href="#抓取数据" class="headerlink" title="抓取数据"></a>抓取数据</h2><p>拿到html文件，然后截取其中的data_name等。方法有很多，这里选择的是一种简单粗暴的，就是用curl或者wget下载html文件，然后用sed,grep和awk处理，重定向出来，形成格式化的数据。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://shouji.baidu.com/rank/features/classic/ -O rank.html</span><br><span class="line">grep data_name rank.html |sed <span class="string">&#x27;s/\(data_name=&quot;\)\(.*\)\(&quot;\)/\2/g&#x27;</span> &gt; data_name.txt</span><br><span class="line">grep data_versionname rank.html |sed <span class="string">&#x27;s/\(data_versionname=&quot;\)\(.*\)\(&quot;\)/\2/g&#x27;</span> &gt; data_versionname.txt</span><br><span class="line">grep data_url rank.html |sed <span class="string">&#x27;s/\(data_url=&quot;\)\(.*\)\(&quot;\)/\2/g&#x27;</span> &gt; data_url.txt</span><br></pre></td></tr></table></figure>
+
+<p>执行完上述命令，抓取数据完毕。</p>
+<h2 id="批量下载"><a href="#批量下载" class="headerlink" title="批量下载"></a>批量下载</h2><p>这里，有了下载链接，下载其实不难，只是需要做一个更优化的处理，即：</p>
+<p>将下载的文件名称与data_name一一对应，这样相较于下载01.apk, 02.apk此类文件名要实用的多。</p>
+<p>我选用的方法是使用paste，行合并data_name.txt和data_url.txt，然后配合awk，使用wget就能批量下载这个列表中的所有链接了，具体的命令是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">paste data_url.txt data_name.txt &gt; download.txt</span><br><span class="line">awk <span class="string">&#x27;&#123;print &quot;wget &quot; $2 &quot; -O &quot; $1NR&quot;.apk&quot;&#125;&#x27;</span> download.txt &gt; download.sh</span><br></pre></td></tr></table></figure>
+
+<p>现在批量下载的脚本已经生成了，就是<code>download.sh</code>，执行就可以下载html文件中排行榜第一页的所有30个APK了，download.sh中的内容大致如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://p.gdown.baidu.com/1de355fb07a5eaf55d0328f998a2edd2740e8fe381fae980f535a6fbc0c60792f48dc74df78f9238d9059db686f9c43c2c31a7a3d527bff3b3b7539c2de52a00d067450e580cff5d4f2815de5fd07a36ccc5fa5454521302badf164fb16561f522a1ceb19051a4dd7fe7df5fd229372127e8cf583dab83ce1c4c4f87c514c0bbd0888fc0b1042050b4b0a19fa746aa4a1d7598661886eba8c58f29b5df2eeb112ac01969bd8b07c54357e77530d7a9bafbbf1aa869c02385c29bf26270e6430bbd76e7296e19be343d48b72df6e3274451b8636dbbf8ba7a7bc3c546ee7a17913ebd27d9e5c94f66 -O 陌陌26.apk</span><br><span class="line">wget http://p.gdown.baidu.com/63126cbcc934522007a4bc8571c5410a5ad2dc54a2fb8168769940d901a3fc20d1a484cc1071791e734472126abfa8d8f78b66ea0346e4f6682393f5f4d92abe0b3946f998cfdd08d8a069b27932c981e38e7b6d92a0a60b0066ea45886a2c90260006a5b3f089dbd6fac69bf41fd9a48091cc09ac463a011f8dfa991e2a957e16341744a90f9b60566739df029a43258c6d393b93f3adbc05af18611ada55a864e4d1447ae7e0ea2ee5deb1515200ee36f6c00ad1c4318f965dd250a50a058852973e18ac055172cd1ab3a033aadc65e736d23f8bda4d76a4dd7de59b13c175b3c2f5dc362f36bac1250aa4f4faf971098157b535f5fad34d3dfa9f650a70e0b500d39db95e597484ae0c76eb985bdee1dd2088b2f29689e62aaf551d2cda510be12632a71fd5c4eec06a1b25f1898c6b21131600d0a6cd955e42fbe9d0f2a1 -O 天天快报27.apk</span><br><span class="line">wget http://p.gdown.baidu.com/dcd8cf4321c60db1c92d270b8b6f0d935e67e8db81884bf478c75a883c2eb9bf59587b0fdd81cafec7f5dfb750a667ddf7b11d5b13f196d3b10c95e907ef4991e0ad9649d5bb872e6293a1fedd41838a67c5d9ecb2db1558e48ea99f4734df8e80f6d6579a965c76e99159a6556763569f09ba9cc6e64abf65c47812349d9d728ba14da571a9607e9de9d0b8fe1ad432d4957acfd5e7db431538926fee90cd009412087f5cc5f8f9fdab217e46922db392afc98f7df3902d430da6600e0cb400e62aaf551d2cda510be12632a71fd5c4eec06a1b25f1898c6b21131600d0a6cd955e42fbe9d0f2a1 -O QQ空间28.apk</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展应用"><a href="#扩展应用" class="headerlink" title="扩展应用"></a>扩展应用</h2><p>基于上面的思路，很容易实现抓取更多页面，比如上面的排行榜界面实际网址是:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http://shouji.baidu.com/rank/features/classic/list_1.html</span><br></pre></td></tr></table></figure>
+
+<p>那么，list_2, list_3, 写个循环批量抓就可以；别的百度榜单，换个网址抓就可以。</p>
+<h2 id="更高级"><a href="#更高级" class="headerlink" title="更高级"></a>更高级</h2><p>python啥的，抓取会更方便，本文使用的简单粗暴的方法，需要下载html文件。实测下载这些html文件的时候，下载速度变化比较大，可能出现下载某个html缓慢的情况，同样的问题出现在apk的下载中，因此，wget的参数设置就比较重要了，以后再写篇文章详细记录一下wget的参数选项。</p>
+<p>不过，这里顺带提一下，-nc, -c, -t这些参数，分别关于是否覆盖下载和下载重试次数等，比较重要，先到这里吧。</p>
+<p>博主，今天22周岁生日，感觉年轻，就是好啊！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+              <a href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag"># 脚本</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/08/10/ACRA%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/" rel="prev" title="ACRA源码分析总结">
+                  <i class="fa fa-chevron-left"></i> ACRA源码分析总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/09/09/%E8%AE%BE%E7%BD%AEhexo/" rel="next" title="设置hexo">
+                  设置hexo <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengmingpei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
